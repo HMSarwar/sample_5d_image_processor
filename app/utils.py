@@ -4,8 +4,10 @@ import tifffile as tiff
 from sklearn.decomposition import PCA
 from skimage.filters import threshold_otsu
 import tempfile
-from db import insert_image
+from db import insert_image, init_db, get_image
+import json
 
+init_db()
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 UPLOAD_DIR = os.path.join(BASE_DIR, 'uploads')
@@ -50,13 +52,17 @@ def process_image(filename):
         file_path = os.path.join(UPLOAD_DIR, filename)
         image = load_image(file_path)
         stats = compute_statistics(image)
-        metdata = {
-            'dimensions': image.shape,
+        metadata = {
+            'dimensions': [i for i in image.shape],
             'itemsize': image.itemsize,
             'size': image.size,
-            'type': image.dtype
+            'type': str(image.dtype)
         }
+        print(stats, metadata)
+        insert_image(filename, json.dumps(metadata), json.dumps(stats))
+        print(get_image(filename))
     except Exception as e:
+        raise e
         return {'error': True, 'message': str(e)}
     return {'error': False, 'success': True, 'message': 'Succesfully processed the image'}
 
