@@ -7,7 +7,6 @@ import tempfile
 from .db import insert_image, init_db, get_image
 import json
 
-init_db()
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 UPLOAD_DIR = os.path.join(BASE_DIR, 'uploads')
 
