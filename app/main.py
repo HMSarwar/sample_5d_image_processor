@@ -5,10 +5,11 @@ import uvicorn
 import tempfile
 from .utils import get_data, extract_slice, analyze_pca
 from .tasks import process_image
-from .db import insert_task, get_task
+from .db import insert_task, get_task, init_db
 
 app = FastAPI()
 os.makedirs("uploads", exist_ok=True)
+init_db()
 
 @app.post("/upload")
 async def upload_image(file: UploadFile = File(...)):
